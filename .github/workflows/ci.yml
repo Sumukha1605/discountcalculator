@@ -25,5 +25,18 @@ jobs:
       - name: Build Maven Project
         run: mvn clean package -DskipTests
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build Docker Image
-        run: docker build -t discount-calculator .
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:latest .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:${{ github.sha }} .
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:${{ github.sha }}
