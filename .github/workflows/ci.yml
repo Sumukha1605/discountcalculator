@@ -32,9 +32,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker Image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:latest .
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:latest .
+
+      - name: Tag Docker Image with SHA
+        run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:latest ${{ secrets.DOCKERHUB_USERNAME }}/discount-calculator:${{ github.sha }}
 
       - name: Push Docker Image
         run: |
